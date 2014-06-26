@@ -22,10 +22,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
-
 #import "ASLocationMonitor.h"
 
 CGFloat kMaximumRadius = 1000; // A kilometer
