@@ -7,6 +7,6 @@ Pod::Spec.new do |spec|
   spec.summary      = "Seamlessly update your app based on the user's location."
   spec.source       = { :git => 'https://github.com/AmbientStatus/ASLocationMonitor.git', :tag => spec.version.to_s }
   spec.source_files = 'Classes/'
-  spec.framework    = 'CoreLocation'
+  spec.frameworks   = 'CoreLocation', 'UIKit', 'Foundation'
   spec.requires_arc = true
 end
