@@ -22,7 +22,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AmbientStatus.h"
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
+
 #import "ASLocationMonitor.h"
 
 CGFloat kMaximumRadius = 1000; // A kilometer
@@ -50,7 +53,7 @@ CGFloat kMaximumRadius = 1000; // A kilometer
         self.locationManager.distanceFilter = kCLDistanceFilterNone;
         self.locationManager.delegate = self;
     }
-    
+
     return self;
 }
 
@@ -60,27 +63,27 @@ CGFloat kMaximumRadius = 1000; // A kilometer
     dispatch_once(&onceToken, ^{
         instance = [self new];
     });
-    
+
     return instance;
 }
 
 - (void)startMonitoring {
     [self.locationManager startUpdatingLocation];
     [self.locationManager startMonitoringSignificantLocationChanges];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(checkLocations:)
                                name:UIDeviceLocationDidChangeNotification object:nil];
-    
+
     _monitoring = YES;
 }
 
 - (void)stopMonitoring {
     [self.locationManager stopUpdatingLocation];
     [self.locationManager stopMonitoringSignificantLocationChanges];
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+
     _monitoring = NO;
 }
 
@@ -99,9 +102,9 @@ CGFloat kMaximumRadius = 1000; // A kilometer
             [_enteringLocations addObject:eachLocation];
         }
     }
-    
+
     NSMutableArray *potentialExits = [_enteringLocations copy];
-    
+
     if (_enteringLocations.count == 0) {
         return;
     }
@@ -119,16 +122,16 @@ CGFloat kMaximumRadius = 1000; // A kilometer
             }
         });
     }
-    
+
     NSMutableArray *finalExits = [NSMutableArray new];
-    
+
     for (CLLocation *eachLocation in potentialExits) {
         if ([eachLocation distanceFromLocation:_lastLocation] > kMaximumRadius) {
             [_enteringLocations removeObject:eachLocation];
             [finalExits addObject:eachLocation];
         }
     }
-    
+
     if (finalExits.count == 0) {
         return;
     }
@@ -158,10 +161,10 @@ CGFloat kMaximumRadius = 1000; // A kilometer
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     CLLocation *location = [locations lastObject];
-    
+
     self.lastLocation = location;
     self.lastCoordinate = location.coordinate;
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:UIDeviceLocationDidChangeNotification
                                                         object:location
                                                       userInfo:@{@"location" : location}];
